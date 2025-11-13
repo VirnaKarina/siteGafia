@@ -1,3 +1,31 @@
+-- Funçao para cadastrar os carros
+	CREATE OR REPLACE FUNCTION cadastrar_carro(
+		p_ano_carro INT,
+		p_dur_bat DECIMAL(5,2),
+		p_id_marca INT,
+		p_id_modelo INT,
+		p_tipo TEXT
+	)
+	RETURNS INT AS $$
+	DECLARE
+		novo_id INT;
+	BEGIN
+		INSERT INTO carro (ano_carro, dur_bat, id_marca, id_modelo, tipo)
+		VALUES (p_ano_carro, p_dur_bat, p_id_marca, p_id_modelo, p_tipo)
+		RETURNING id_carro INTO novo_id;
+
+		RETURN novo_id;
+	END;
+	$$ LANGUAGE plpgsql;
+
+-- Usando a funçao
+	
+	SELECT cadastrar_carro(
+		ano, kwh, 
+		x, -- id_marca
+		xx, -- id_modelo
+		'Elétrico'
+	);
 
 -- BYD
 INSERT INTO carro (ano_carro, dur_bat, id_marca, id_modelo, tipo)
