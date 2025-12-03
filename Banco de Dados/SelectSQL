@@ -1,56 +1,49 @@
--- CONSULTAS SIMPLES 
+-- EXEMPLO DE SELEÇÃO MOSTRANDO TODAS AS INFORMAÇÕES DO USUÁRIO DE ID 42 
 
-SELECT * FROM estado;
-SELECT * FROM marca;
-SELECT * FROM modelo;
-SELECT * FROM usuarios;
-SELECT * FROM carro;
-SELECT * FROM historico_viagem;
+SELECT id_usuario, nome, sobrenome, email, senha, is_admin, cidade, cep, dt_nasc, telefone
+FROM public.usuarios
+WHERE id_usuario=42;
 
---CONSULTAS COM FILTROS (WHERE)
 
-SELECT * FROM estado WHERE uf_estado = 'SP';
-SELECT * FROM usuarios WHERE nome LIKE 'Giovana%';
-SELECT * FROM carro WHERE ano_carro > 2020;
-SELECT * FROM historico_viagem WHERE km_viagem > 100.00;
+-- EXEMPLO DE SELEÇÃO MOSTRANDO TODAS AS INFORMAÇÕES DO CARRO DE ID 16 (DA TABELA CARRO)
 
---CONSULTAS COM ORDENAÇÃO (ORDER BY)
+SELECT id_carro, ano_carro, dur_bat, id_marca, id_modelo, passageiros, id_usuario
+FROM public.carro
+WHERE id_carro=16;
 
-SELECT * FROM usuarios ORDER BY nome ASC;
-SELECT * FROM carro ORDER BY ano_carro DESC;
-SELECT * FROM historico_viagem ORDER BY dt_consulta DESC;
 
---CONSULTAS COM AGREGAÇÃO (COUNT, AVG, SUM)
+-- SELECIONANDO TODOS OS DADOS DO HISTÓRICO DE CÓDIGO 1
 
-SELECT COUNT(*) FROM usuarios;
-SELECT AVG(km_viagem) FROM historico_viagem;
-SELECT SUM(qnt_abastecimento) FROM historico_viagem;
+SELECT id_historico, cidade_origem, cidade_destino, dt_consulta, tempo_viagem, qnt_abastecimento, km_viagem, id_carro, id_usuario
+FROM public.historico_viagem
+WHERE id_historico=1;
 
---JUNÇÃO ENTRE TABELAS (JOIN)
 
--- Usuários com nome do estado
-SELECT u.nome, u.sobrenome, e.nm_estado
-FROM usuarios u
-JOIN estado e ON u.id_estado = e.id_estado;
+-- EXEMPLO DE SELEÇÃO JUTANDO AS TABEBELAS CARRO, MARCA E MODELO, MOSTRANDO O ID DO CARRO, A DURAÇÃO DA BATERIA, QUANTIDADE DE PASSAGEIROS, NOME DA MARCA E NOME DO MODELO
 
--- Carros com marca e modelo
-SELECT c.id_carro, c.ano_carro, m.nm_marca, mo.nm_modelo
-FROM carro c
-JOIN marca m ON c.id_marca = m.id_marca
-JOIN modelo mo ON c.id_modelo = mo.id_modelo;
 
--- Histórico de viagem com nome do usuário e estado
-SELECT h.id_historico, h.cidade_origem, h.cidade_destino, u.nome, e.nm_estado
-FROM historico_viagem h
-JOIN usuario u ON h.id_usuario = u.id_usuario
-JOIN estados e ON h.id_estado = e.id_estado;
+SELECT 
+    c.id_carro,
+    c.dur_bat,
+    c.passageiros,
+    m.nm_marca,
+    mo.nm_modelo
+FROM public.carro c
+JOIN public.marca  m  ON m.id_marca = c.id_marca
+JOIN public.modelo mo ON mo.id_modelo = c.id_modelo
+WHERE c.id_carro = 16;
 
-CONSULTAS COM AGRUPAMENTOS (GROUP BY)
 
-SELECT id_estado, COUNT(*) AS total_usuarios
-FROM usuario
-GROUP BY id_estado;
+--SELECIONANDO O MODELO DE ID 1 E NOME DO MODELO
 
-SELECT cidade_origem, AVG(km_viagem) AS media_km
-FROM historico_viagem
-GROUP BY cidade_origem;
+SELECT id_modelo, nm_modelo
+FROM public.modelo
+WHERE id_modelo=1;
+
+
+-- EXEMPLO DE SELEÇÃO MOSTRANDO O ID DA MARCA E NOME DA MARCA
+
+SELECT id_marca, nm_marca
+FROM public.marca
+WHERE id_marca=1;
+

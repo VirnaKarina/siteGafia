@@ -1,56 +1,56 @@
------ INSERTS SQL -----
+-- INSERT USUÁRIOS 
 
--- INSERT ESTADOS
-INSERT INTO estados (nm_estado, uf_estado)
-	VALUES(
-	   :nm_estado,
-    :uf_estado
-);
+INSERT INTO public.usuarios
+(id_usuario, nome, sobrenome, email, senha, is_admin, cidade, cep, dt_nasc, telefone)
+VALUES(42, 'Camilo', 'Perucci', 'camilo@fho.edu.br', '$2y$10$WHWrEgvzgvjN7pOSH6C2yuFdQmPVmheqBQ6lrXEfhG9nTpKJMxGwG', false, NULL, NULL, NULL, NULL);
 
--- INSERT MARCA
-INSERT INTO marca (nm_marca)
-	VALUES(
-	   :nm_marca
-);
-
--- INSERT MODELO
-INSERT INTO modelo (nm_modelo)
-	VALUES(
-	   :nm_modelo
-);
 
 -- INSERT CARRO
-INSERT INTO carro (ano_carro, dur_bat, id_marca, id_modelo)
-	VALUES(
-	   :ano_carro,
-    :dur_bat,
-    :id_marca,
-    :id_modelo
-);
 
--- INSERT USUARIOS
-INSERT INTO usuario (nome, sobrenome, cpf, email, senha, telefone, dt_nasc, id_estado)
- VALUES(
- 	  :nome,
-    :sobrenome,
-    :cpf,
-    :email,
- 	  :senha,
-    :telefone,
-    :dt_nasc,
-    :id_estado
-);
+INSERT INTO public.carro
+(id_carro, ano_carro, dur_bat, id_marca, id_modelo, passageiros, id_usuario)
+VALUES(16, 2025, 38.00, 1, 1, 5, NULL);
 
--- TABELA HISTORICO_VIAGEM
-INSERT INTO historico_viagem (cidade_origem, cidade_destino, dt_consuta, tempo_viagem, qnt_abastecimento, km_viagem, id_estado, id_carro, id_usuario)
- VALUES (
-    :cidade_origem,
-    :cidade_destino,
-    :dt_consulta,
-    :tempo_viagem,
-    :qnt_abastecimento,
-    :km_viagem,
-	:id_estado,
-    :id_carro,
-    :id_usuario
- )
+-- INSERT CARRO/PASSAGEIROS - REALIZADO NA ENTREGA FINAL
+
+INSERT INTO carro (id_modelo, passageiros) VALUES
+  (1,  5),
+  (2,  5),
+  (3,  5),
+  (4,  5),
+  (5,  5),
+  (8,  5),
+  (11, 5),
+  (13, 5),
+  (14, 5),
+  (15, 5),
+  (16, 5),
+  (20, 4),
+  (21, 5),
+  (22, 5),
+  (33, 5),
+  (49, 5)
+ON CONFLICT (id_modelo) DO UPDATE
+  SET passageiros = EXCLUDED.passageiros;
+
+-- INSERINDO INFORMAÇÕES NA VIAGEM DE ID 1
+
+INSERT INTO public.historico_viagem
+(id_historico, cidade_origem, cidade_destino, dt_consulta, tempo_viagem, qnt_abastecimento, km_viagem, id_carro, id_usuario)
+VALUES(1, 'Araras - SP, Brasil', 'Araraquara, SP, Brasil', '2025-12-02', '01:40:39'::interval, 0, 125.97, 35, 40);
+
+-- INSERINDO O MODELO DOLPHIN MINI NO MODELO DE ID 1
+
+INSERT INTO public.modelo
+(id_modelo, nm_modelo)
+VALUES(1, 'Dolphin Mini');
+
+
+-- INSERINDO A MARCA BYD NO ID 1 
+
+INSERT INTO public.marca
+(id_marca, nm_marca)
+VALUES(1, 'BYD');
+
+
+
