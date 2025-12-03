@@ -9,9 +9,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="src/style/style.css" />
+  <link rel="icon" href="src/img/Gafialogo.png" type="image/png">
 </head>
 <body>
+  <div class="layout">
   <header class="site-header">
     <div class="container header-inner">
       <a class="logo" href="/" aria-label="GAFIA - Início">
@@ -27,13 +30,14 @@
       <nav id="nav-guest" class="nav" aria-label="Principal">
         <a href="#inicio">Início</a>
         <a href="#sobre">Sobre</a>
-        <a href="planejamento.html">Planejador de Viagem</a>
+        <a href="planejamento.html">Planejar Viagem</a>
         <a href="cadastro.html">Cadastro</a>
         <a href="#contato">Contato</a>
         <a href="login.html" class="btn btn-outline btn-login">Entrar</a>
       </nav>
 
       <nav id="nav-user" class="nav" aria-label="Principal do Utilizador" style="display: none;">
+        <a href="dashboard.html">Inicio</a>
         <a href="planejamento.html">Planejar Viagem</a>
         <a href="veiculos.html">Meus Veículos</a> <a href="perfil.html">Meu Perfil</a>     <span id="user-greeting" style="color: var(--muted); align-self: center;"></span>
         <a href="api/logout.php" class="btn btn-outline btn-login">Sair</a>
@@ -54,7 +58,7 @@
       </section>
 
       <figure class="hero-img">
-        <img class="carro" src="src/img/imagem2.png" alt="Ilustração de carro elétrico" />
+        <img class="carro" src="src/img/imagem22.png" alt="Ilustração de carro elétrico" />
       </figure>
     </div>
   </main>
@@ -79,6 +83,39 @@
         <p>Interface moderna, responsiva e pensada para uso em viagens.</p>
       </article>
     </div>
+<!-- ===== CARROSSEL INFINITO ===== -->
+<div class="infinite-carousel">
+  <div class="infinite-track">
+    <div class="img-card">
+      <img src="src/img/carro_carrossel.png" alt="Imagem de carro elétrico pela estrada" />
+    </div>
+    <div class="img-card">
+      <img src="src/img/pontosRecarga_carrossel.png" alt="Ponto de recarga de carro elétrico" />
+    </div>
+    <div class="img-card">
+      <img src="src/img/mapa_carrossel.png" alt="Mapa com as rotas de um trajeto" />
+    </div>
+    <div class="img-card">
+      <img src="src/img/historico_carrossel.png" alt="Exemplo do histórico" />
+    </div>
+
+    <!-- DUPLICADOS pra fazer o loop contínuo -->
+    <div class="img-card">
+      <img src="src/img/carro_carrossel.png" alt="Imagem de carro elétrico pela estrada" />
+    </div>
+    <div class="img-card">
+      <img src="src/img/pontosRecarga_carrossel.png" alt="Ponto de recarga de carro elétrico" />
+    </div>
+    <div class="img-card">
+      <img src="src/img/mapa_carrossel.png" alt="Mapa com as rotas de um trajeto" />
+    </div>
+    <div class="img-card">
+      <img src="src/img/historico_carrossel.png" alt="Exemplo do histórico" />
+    </div>
+  </div>
+</div>
+
+
   </section>
 
   <section id="cadastro" class="cta">
@@ -88,25 +125,131 @@
       <a href="cadastro.html" class="btn btn-primary btn-lg">Criar conta</a>
     </div>
   </section>
+  <section id="contato" class="section container">
+    <div class="contact-header">
+        <h2>Quem somos nós?</h2>
+        <p class="section-lead">Conheça a equipe de desenvolvedores por trás do GAFIA.</p>
+    </div>
 
-  <footer id="contato" class="site-footer">
+    <div class="team-grid">
+        
+        <article class="dev-card">
+            <div class="dev-info">
+                <h3>Giovana Jacobucci</h3>
+                <span class="dev-role">👩🏻‍💻 Desenvolvedora</span>
+                <a href="mailto:giovanajacobucci@alunos.fho.edu.br" class="dev-email">giovanajacobucci@alunos.fho.edu.br</a>
+            </div>
+            <div class="dev-social">
+                <a href="https://github.com/Giovana-Jacobucci" target="_blank" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/giovana-jacobucci/" target="_blank" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+            </div>
+        </article>
+
+        <article class="dev-card">
+            <div class="dev-info">
+                <h3>Kael Vicente Dipres</h3>
+                <span class="dev-role">👨🏻‍💻 Desenvolvedor</span>
+                <a href="mailto:vicentedipres@alunos.fho.edu.br" class="dev-email">vicentedipres@alunos.fho.edu.br</a>
+            </div>
+            <div class="dev-social">
+                <a href="https://github.com/Klaus-Dipres" target="_blank" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                </div>
+        </article>
+
+        <article class="dev-card">
+            <div class="dev-info">
+                <h3>Kaio Camargo</h3>
+                <span class="dev-role">👨🏻‍💻 Desenvolvedor</span>
+                <a href="mailto:eduardokaio908@alunos.fho.edu.br" class="dev-email">eduardokaio908@alunos.fho.edu.br</a>
+            </div>
+            <div class="dev-social">
+                <a href="https://github.com/EduardoBuenoo" target="_blank" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/kaio-eduardo-5a8993322/" target="_blank" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+            </div>
+        </article>
+
+        <article class="dev-card">
+            <div class="dev-info">
+                <h3>Rafael Cauã D. de Lima</h3>
+                <span class="dev-role">👨🏻‍💻 Desenvolvedor</span>
+                <a href="mailto:rcaua49@alunos.fho.edu.br" class="dev-email">rcaua49@alunos.fho.edu.br</a>
+            </div>
+            <div class="dev-social">
+                <a href="https://github.com/rafael001-py" target="_blank" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/rafael-caua-delariva-de-lima-80b9b6304/" target="_blank" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+            </div>
+        </article>
+
+        <article class="dev-card">
+            <div class="dev-info">
+                <h3>Sofia Camargo Nunes</h3>
+                <span class="dev-role">👩🏻‍💻 Desenvolvedora</span>
+                <a href="mailto:sofiacamargo@alunos.fho.edu.br" class="dev-email">sofiacamargo@alunos.fho.edu.br</a>
+            </div>
+            <div class="dev-social">
+                <a href="https://github.com/sofia-camargo" target="_blank" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/sofia-camargo-nunes-a64185304/" target="_blank" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+            </div>
+        </article>
+
+        <article class="dev-card">
+            <div class="dev-info">
+                <h3>Virna Karina do Amaral</h3>
+                <span class="dev-role">👩🏻‍💻 Desenvolvedora</span>
+                <a href="mailto:virna.amaral@alunos.fho.edu.br" class="dev-email">virna.amaral@alunos.fho.edu.br</a>
+            </div>
+            <div class="dev-social">
+                <a href="https://github.com/VirnaKarina" target="_blank" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/virna-amaral-39018b298/" target="_blank" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+ <footer class="site-footer">
     <div class="container footer-grid">
-      <div>
-        <strong>GAFIA</strong>
+      
+      <div class="footer-left-content">
+        <strong class="footer-logo">GAFIA</strong>
         <p class="muted">Planejamento de Viagens Elétricas</p>
+        <p class="copyright">© 2025 GAFIA — Todos os direitos reservados.</p>
       </div>
+
       <nav aria-label="Links de rodapé">
         <a href="#sobre">Sobre</a>
         <a href="cadastro.html">Cadastro</a>
         <a href="#contato">Contato</a>
         <a href="login.html">Entrar</a>
       </nav>
-      <p class="copyright">© 2025 GAFIA — Todos os direitos reservados.</p>
+
     </div>
   </footer>
 
   <script src="src/js/main.js"></script>
-
+</div>
 </body>
 
 </html>

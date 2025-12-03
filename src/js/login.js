@@ -20,9 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Login realizado com sucesso! Redirecionando...');
-                    // Crie esta página depois, será a área logada do seu site
-                    window.location.href = 'painel.html'; 
+                    // ALTERAÇÃO AQUI: Verifica se é admin para redirecionar corretamente
+                    if (data.is_admin === true || data.is_admin === "true" || data.is_admin === 1) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
                 } else {
                     alert(`Erro: ${data.error}`);
                 }

@@ -3,117 +3,237 @@
 let map;
 let directionsService;
 let directionsRenderer;
-let markers = []; // Array para guardar os marcadores
+let markers = []; 
+let usuarioEstaLogado = false; 
+let veiculoSelecionado = { id: null, autonomia: 300, eficiencia: 200 }; 
 
-async function initMap() {
-    // Importa as bibliotecas necessárias da API
+const OCM_API_KEY = "c1b598ab-8144-43d6-9c74-e191d034ab21";
+
+// --- CORREÇÃO: Torna a função global para o Google Maps encontrar ---
+window.initMap = async function() {
+    
+    // Importa as bibliotecas necessárias
     const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const { Autocomplete } = await google.maps.importLibrary("places");
     const { DirectionsService, DirectionsRenderer } = await google.maps.importLibrary("routes");
 
     directionsService = new DirectionsService();
     directionsRenderer = new DirectionsRenderer();
 
+    // Inicializa o Mapa
     map = new Map(document.getElementById("map"), {
         zoom: 4,
         center: { lat: -14.235, lng: -51.925 }, // Centro do Brasil
-        mapId: "GAFIA_MAP_STYLE" // Um ID para o estilo de mapa
+        mapId: "GAFIA_MAP_STYLE"
     });
 
     directionsRenderer.setMap(map);
-    // directionsRenderer.setPanel(document.getElementById('directions-panel')); - Removido temporariamente - Sua função é
-    //calcular e exibir a rota no painel, mas estamos focando na exibição no mapa.
+    
+    // Configura os inputs de endereço
     const originInput = document.getElementById('origin-input');
     const destinationInput = document.getElementById('destination-input');
-    new Autocomplete(originInput);
-    new Autocomplete(destinationInput);
+    
+    if (originInput && destinationInput) {
+        new Autocomplete(originInput, { componentRestrictions: { country: "br" } });
+        new Autocomplete(destinationInput, { componentRestrictions: { country: "br" } });
+    }
 
-    document.getElementById('calculate-route').addEventListener('click', calculateAndDisplayRoute);
+    // Botão de Calcular
+    const btnCalc = document.getElementById('calculate-route');
+    if(btnCalc) btnCalc.addEventListener('click', calculateAndDisplayRoute);
+    
+    // Dropdown de Seleção de Carro
+    const selectCarro = document.getElementById('select-meu-carro');
+    if (selectCarro) selectCarro.addEventListener('change', updateSelectedVehicle);
+
+    // Verifica sessão
+    await checkSession(); 
+};
+
+function updateSelectedVehicle(event) {
+    const selectedValue = event.target.value;
+    if (selectedValue) {
+        veiculoSelecionado = JSON.parse(selectedValue);
+    } else {
+        veiculoSelecionado = { id: null, autonomia: 300, eficiencia: 200 }; 
+    }
+}
+
+async function checkSession() { 
+    const loginPrompt = document.getElementById('login-prompt'); 
+    const selectCarro = document.getElementById('select-meu-carro'); 
+    
+    try {
+        const response = await fetch('api/verificar_sessao.php'); 
+        const session = await response.json();
+        
+        if (session.loggedIn) {
+            usuarioEstaLogado = true;
+            if (loginPrompt) loginPrompt.style.display = 'none'; 
+            if (selectCarro) {
+                selectCarro.style.display = 'block';
+                carregarVeiculos(selectCarro);
+            }
+        } else {
+            usuarioEstaLogado = false;
+            if (loginPrompt) loginPrompt.style.display = 'block'; 
+            if (selectCarro) selectCarro.style.display = 'none'; 
+        }
+    } catch (error) {
+        console.error('Erro ao verificar sessão:', error);
+    }
+}
+
+async function carregarVeiculos(selectElement) {
+    try {
+        const res = await fetch('api/meus_veiculos.php?action=list_garage');
+        const carros = await res.json();
+        
+        selectElement.innerHTML = '<option value="">Selecione seu Carro</option>';
+        if (carros && carros.length > 0) {
+            carros.forEach((carro, index) => {
+                const eficiencia = carro.eficiencia_wh_km || 200;
+                
+                const option = document.createElement('option');
+                option.value = JSON.stringify({
+                    id: carro.id_carro, 
+                    autonomia: carro.dur_bat, 
+                    eficiencia: eficiencia 
+                });
+                option.textContent = `${carro.nm_marca} ${carro.nm_modelo}`;
+                
+                if (index === 0) {
+                    option.selected = true;
+                    veiculoSelecionado = JSON.parse(option.value);
+                }
+                selectElement.appendChild(option);
+            });
+        }
+    } catch (e) { console.error("Erro ao carregar veículos", e); }
+}
+
+async function findChargingStations(bounds) {
+    clearMarkers(); 
+    if (!bounds) return;
+
+    const centerLat = (bounds.getNorthEast().lat() + bounds.getSouthWest().lat()) / 2;
+    const centerLng = (bounds.getNorthEast().lng() + bounds.getSouthWest().lng()) / 2;
+    
+    // Define um raio de busca (em KM)
+    const distanceKm = 50; // 50km de raio (Para cobrir o Brasil)
+
+    // A API da OCM permite buscar por raio em torno de um ponto
+    const ocmUrl = `https://api.openchargemap.io/v3/poi/?output=json&latitude=${centerLat}&longitude=${centerLng}&distance=${distanceKm}&maxresults=100&verbose=false&countrycode=BR&key=${OCM_API_KEY}`;
+    
+    try {
+        const response = await fetch(ocmUrl);
+        const data = await response.json();
+
+        if (data && data.length > 0) {
+            data.forEach(poi => {
+                if (poi.AddressInfo?.Latitude && poi.AddressInfo?.Longitude) {
+                    const position = { lat: poi.AddressInfo.Latitude, lng: poi.AddressInfo.Longitude };
+                    
+                    const marker = new google.maps.Marker({
+                        position: position,
+                        map: map,
+                        title: poi.AddressInfo.Title || 'Ponto de Recarga'
+                    });
+                    markers.push(marker);
+                }
+            });
+        }
+    } catch (error) {
+        console.error("Erro OCM:", error);
+    }
 }
 
 function calculateAndDisplayRoute() {
-    clearMarkers();
+    const originInput = document.getElementById('origin-input');
+    const destinationInput = document.getElementById('destination-input');
     
-    // Referência ao novo contêiner de resumo da rota
-    const summaryContainer = document.getElementById('output-route-summary');
-
-    // 1. Oculta o painel de resumo e limpa os campos em cada nova tentativa
-    summaryContainer.style.display = 'none';
-    document.getElementById('output-distancia').innerText = '---'; 
-    document.getElementById('output-duracao').innerText = '---'; 
-    
-    // REMOVIDO: document.getElementById('directions-panel').innerHTML = ''; 
-    // Esta linha foi removida pois impedia o directionsRenderer de funcionar.
-
+    if(!originInput.value || !destinationInput.value) {
+        alert("Preencha origem e destino.");
+        return;
+    }
 
     const request = {
-        origin: document.getElementById('origin-input').value,
-        destination: document.getElementById('destination-input').value,
+        origin: originInput.value,
+        destination: destinationInput.value,
         travelMode: google.maps.TravelMode.DRIVING
     };
 
     directionsService.route(request, (result, status) => {
         if (status == 'OK') {
+            directionsRenderer.setDirections(result);
+            
             const rota = result.routes[0].legs[0];
-            const distanciaTotal = rota.distance.text; 
-            const duracaoTotal = rota.duration.text;
-            const energiaEstimado = calcularConsumoEnergia(rota.distance.value); // Em metros
-             
-            /*Exibe a distância e a duração no HTML para o usuário*/
-            document.getElementById('output-distancia').innerText = distanciaTotal; 
-            document.getElementById('output-duracao').innerText = duracaoTotal;
-            document.getElementById('output-energia').innerText = energiaEstimado.toFixed(2) + ' kWh'; 
-            summaryContainer.style.display = 'block'; // Torna o contêiner visível
+            const distanciaKm = rota.distance.value / 1000;
+            const tempoSegundos = rota.duration.value;
+            
+            // Cálculos
+            const consumoKWh = (distanciaKm * veiculoSelecionado.eficiencia) / 1000;
+            const distanciaPorCarga = (veiculoSelecionado.autonomia * 1000) / veiculoSelecionado.eficiencia;
+            const paradas = Math.ceil(Math.max(0, distanciaKm / distanciaPorCarga) - 1);
+            const tempoRecargaMin = paradas * 40; 
+            const tempoTotalSegundos = tempoSegundos + (tempoRecargaMin * 60);
 
-            // Esta linha agora funcionará e irá reescrever o directions-panel
-            directionsRenderer.setDirections(result); 
-            findChargingStations(result);
+            // Exibição
+            document.getElementById('output-distancia').innerText = rota.distance.text;
+            document.getElementById('output-duracao').innerText = rota.duration.text;
+            document.getElementById('output-energia').innerText = `${consumoKWh.toFixed(1)} kWh`;
+            document.getElementById('output-paradas').innerText = paradas;
+            document.getElementById('output-tempo-recarrega').innerText = tempoRecargaMin + " min";
+            
+            const horas = Math.floor(tempoTotalSegundos / 3600);
+            const minutos = Math.floor((tempoTotalSegundos % 3600) / 60);
+            document.getElementById('output-tempo-total').innerText = `${horas}h ${minutos}m`;
+            document.getElementById('output-recarregar').innerText = (paradas > 0 ? "Sim" : "Não"); 
+            
+            document.getElementById('advanced-route-details').style.display = 'block';
+
+            // --- SALVAR NO BANCO ---
+            if (usuarioEstaLogado && veiculoSelecionado.id) {
+                const dadosViagem = {
+                    id_carro: veiculoSelecionado.id,
+                    origem: originInput.value,     
+                    destino: destinationInput.value,   
+                    distancia_km: distanciaKm,
+                    tempo_viagem_segundos: tempoTotalSegundos, 
+                    paradas: paradas
+                };
+                salvarViagemNoHistorico(dadosViagem);
+            }
+            
+            findChargingStations(result.routes[0].bounds);
+
         } else {
-            // Se falhar, garante que o contêiner permaneça oculto
-            summaryContainer.style.display = 'none'; 
-            alert('Não foi possível calcular a rota. Erro: ' + status);
+            alert('Erro ao calcular rota: ' + status);
         }
     });
 }
 
-async function findChargingStations(routeResult) {
-    const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary("places");
-    const centerOfRoute = routeResult.routes[0].bounds.getCenter();
-
-    const request = {
-        // A nova API usa uma sintaxe um pouco diferente
-        textQuery: 'estação de recarga para veículos elétricos',
-        location: centerOfRoute,
-        radius: 50000,
-    };
-    
-    // A nova API usa um método diferente para a busca
-    const { places } = await Place.searchByText(request);
-
-    if (places.length) {
-        places.forEach(place => {
-            createMarkerForPlace(place);
+async function salvarViagemNoHistorico(dados) {
+    try {
+        const response = await fetch('api/salvar_viagem.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
         });
+        
+        const resultado = await response.json();
+        
+        if(resultado.success) {
+            console.log("Histórico salvo com sucesso!");
+        } else {
+            console.warn("Erro API salvar:", resultado.message);
+        }
+    } catch (error) {
+        console.error("Erro rede:", error);
     }
-}
-
-async function createMarkerForPlace(place) {
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-    const marker = new AdvancedMarkerElement({
-        map: map,
-        position: place.location,
-        title: place.displayName
-    });
-    markers.push(marker);
 }
 
 function clearMarkers() {
-    for (let i = 0; i < markers.length; i++) {
-        markers[i].map = null; // A nova forma de remover marcadores
-    }
+    markers.forEach(m => m.setMap(null));
     markers = [];
 }
-
-// Inicia o mapa
-initMap();
