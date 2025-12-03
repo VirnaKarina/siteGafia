@@ -1,28 +1,29 @@
 -- TABELA MARCA
-CREATE TABLE marca(
-
-	id_marca SERIAL PRIMARY KEY,
+CREATE TABLE marca (
+    id_marca SERIAL PRIMARY KEY,
     nm_marca VARCHAR(50) NOT NULL
 );
 
--- TABELA MODELOS
-CREATE TABLE modelo(
-
-	id_modelo SERIAL PRIMARY KEY,
+-- TABELA MODELO
+CREATE TABLE modelo (
+    id_modelo SERIAL PRIMARY KEY,
     nm_modelo VARCHAR(50) NOT NULL
 );
 
-
--- TABELA USUARIO
-CREATE TABLE usuario(
+-- TABELA USUARIOS
+CREATE TABLE usuarios (
     id_usuario SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,         
+    nome VARCHAR(100) NOT NULL,
     sobrenome VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    senha_hash VARCHAR(255) NOT NULL,
-    is_admin BOOLEAN DEFAULT FALSE
+    email VARCHAR(150) NOT NULL,
+    senha_hash VARCHAR(100) NOT NULL,
+    is_admin BOOLEAN DEFAULT FALSE,
+    cep VARCHAR(10),
+    cidade VARCHAR(100),
+    telefone VARCHAR(20),
+    dt_nasc DATE,
+    id_carro INT
 );
-
 
 -- TABELA CARRO
 CREATE TABLE carro (
@@ -30,13 +31,14 @@ CREATE TABLE carro (
     ano_carro INT,
     dur_bat INT,
     id_marca INT,
-    passageiros INT,
     id_modelo INT,
+    passageiros INT,
+    id_usuario INT,
 
-    CONSTRAINT fk_marca FOREIGN KEY (id_marca) REFERENCES marca (id_marca),
-    CONSTRAINT fk_modelo FOREIGN KEY (id_modelo) REFERENCES modelo (id_modelo)
+    CONSTRAINT fk_marca  FOREIGN KEY (id_marca) REFERENCES marca(id_marca),
+    CONSTRAINT fk_modelo FOREIGN KEY (id_modelo) REFERENCES modelo(id_modelo),
+    CONSTRAINT fk_usuario_carro FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
-
 
 -- TABELA HISTORICO_VIAGEM
 CREATE TABLE historico_viagem (
@@ -45,14 +47,7 @@ CREATE TABLE historico_viagem (
     cidade_destino VARCHAR(50),
     dt_consulta DATE,
     tempo_viagem INTERVAL,
-    qnt_abastecimento INT,
+    qnt_abastecimentos INT,
     km_viagem DECIMAL(6,2),
-    id_estado INT,
     id_carro INT,
-    id_usuario INT,
-    
-    CONSTRAINT fk_estado FOREIGN KEY (id_estado) REFERENCES estados (id_estado),
-    CONSTRAINT fk_carro FOREIGN KEY (id_carro) REFERENCES carro (id_carro),
-    CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
-);
-
+    id

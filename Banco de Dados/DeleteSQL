@@ -1,9 +1,28 @@
--- Exclusão de usuarios e todos os dados relacionados
+-- DELETANDO O USUÁRIO 42
 
-DELETE * FROM usuario WHERE id_usuario = 1; -- exemplo de exclusão de um usuário específico
-DELETE FROM historico_viagem WHERE id_usuario = 1; -- excluir histórico de viagens do usuário
+DELETE FROM public.usuarios
+WHERE id_usuario=42;
+	
 
--- Exclusão de todos os dados (cuidado ao executar)
-DELETE * FROM historico_viagem;
-DELETE * FROM usuario;
+-- DELETANDO O CARRO DE ID 16
 
+DELETE FROM public.carro
+WHERE id_carro=16;
+
+
+-- DELETANDO O HISTÓRICO DE ID 1
+	
+DELETE FROM public.historico_viagem
+WHERE id_historico=1;
+
+
+-- DELETANDO O ID 1 DA TABELA MODELO 
+
+DELETE FROM public.modelo
+WHERE id_modelo=1;
+
+
+-- DELETANDO O ID 1 DA TABELA MARCA
+
+DELETE FROM public.marca
+WHERE id_marca=1;
