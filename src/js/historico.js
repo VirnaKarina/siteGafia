@@ -64,7 +64,7 @@ async function carregarGraficosFrota() {
             labels.push(carro.nome_veiculo.split(' ')[0]); 
             dataViagens.push(carro.total_viagens);
             dataKM.push(parseFloat(carro.km_total_rodado));
-            dataTempo.push(parseFloat(carro.total_horas));
+            dataTempo.push(parseFloat(carro.total_horas || 0));
             dataRecargas.push(carro.total_recargas);
         });
 
