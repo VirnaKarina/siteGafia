@@ -1,39 +1,34 @@
--- UPDATE CARRO
-UPDATE carro
-SET ano_carro = :ano_carro,
-    dur_bat = :dur_bat,
-    id_marca = :id_marca,
-    id_modelo = :id_modelo
-    
-WHERE id_carro = :id_carro;
+-- ALTERANDO A CONTA DO USUÁRIO 42 DE CONTA PADRÃO PARA CONTA ADMIN
 
--- UPDATE ESTADO
-UPDATE estados
-SET nm_estado = :nm_estado,
-    uf_estado = :uf_estado
-    
-WHERE id_estado = :id_estado;
+UPDATE public.usuarios
+SET nome='Camilo', sobrenome='Perucci', email='camilo@fho.edu.br', senha='$2y$10$WHWrEgvzgvjN7pOSH6C2yuFdQmPVmheqBQ6lrXEfhG9nTpKJMxGwG', is_admin=true, cidade=NULL, cep=NULL, dt_nasc=NULL, telefone=NULL
+WHERE id_usuario=42;
 
--- UPDATE MARCA
-UPDATE marca
-SET nm_marca = :nm_marca
-    
-WHERE id_marca = :id_marca;
 
--- UPDATE MODELO
-UPDATE modelo
-SET nm_modelo = :nm_modelo
-    
-WHERE id_modelo = :id_modelo;
+-- ATUALIZANDO INFORMAÇÕES DO CARRO DE ID 16
 
--- UPADATE USUARIO
-UPDATE usuario
-SET  nome = :nome,
-    sobrenome = :sobrenome,
-    cpf = :cpf,
-    email = :email,
- 	senha + :senha,
-    telefone = :telefone,
-    dt_nasc = :dt_nasc
+UPDATE public.carro
+SET ano_carro=2025, dur_bat=38.00, id_marca=1, id_modelo=1, passageiros=5, id_usuario=NULL
+WHERE id_carro=16;
 
-WHERE id_usuario = :id_usuario;
+
+-- ATUALIZANDO INFORMAÇÕES DA VIAGEM DE ID 1
+
+UPDATE public.historico_viagem
+SET cidade_origem='Araras - SP, Brasil', cidade_destino='Araraquara, SP, Brasil', dt_consulta='2025-12-02', tempo_viagem='01:40:39'::interval, qnt_abastecimento=0, km_viagem=125.97, id_carro=35, id_usuario=40
+WHERE id_historico=1;
+
+
+-- ATUALIZANDO O NOME DE MODELO "DOLPHIN MINI" NO MODELO DE ID 1
+
+UPDATE public.modelo
+SET nm_modelo='Dolphin Mini'
+WHERE id_modelo=1;
+
+
+-- ATUALIZANDO A MARCA BYD NO ID 1
+
+UPDATE public.marca
+SET nm_marca='BYD'
+WHERE id_marca=1;
+
