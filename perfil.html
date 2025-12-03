@@ -1,34 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <title>Meu Perfil - GAFIA</title>
-    <link rel="stylesheet" href="src/style/style.css" />
-    <link rel="stylesheet" href="src/style/login.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Meu Perfil</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="src/style/perfil.css">
+  <link rel="icon" href="src/img/Gafialogo.png" type="image/png">
 </head>
 <body>
-    <header class="site-header"></header>
 
-    <main class="section container">
-        <div class="login-container" style="background: var(--card); margin: 0 auto; color: var(--text);">
-            <h2 style="color: var(--text);">Meu Perfil</h2>
-            <p style="color: var(--muted);">Atualize suas informações pessoais.</p>
-            
-            <form id="form-perfil">
-                <input type="text" id="nome" placeholder="Nome" required>
-                <input type="text" id="sobrenome" placeholder="Sobrenome" required>
-                <input type="text" id="telefone" placeholder="Telefone" required>
-                
-                <input type="email" id="email" placeholder="Email (não pode ser alterado)" readonly disabled>
-                <input type="text" id="cpf" placeholder="CPF (não pode ser alterado)" readonly disabled>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Salvar Alterações</button>
-            </form>
-            <div id="perfil-mensagem" style="margin-top: 1rem;"></div>
-        </div>
-    </main>
+<input type="checkbox" id="nav-toggle-internal">
 
-    <footer class="site-footer"></footer>
-    <script src="src/js/perfil.js"></script>
+<aside class="menu-lateral">
+  <button class="btn-voltar" id="btn-voltar-dinamico">
+      <i class="fa-solid fa-arrow-left"></i> Início
+  </button>
+  <div class="brand"><i class="fa-solid fa-user"></i> Meu Perfil</div>
+  
+  <label for="nav-toggle-internal" class="hamburger-label">
+      <span></span><span></span><span></span>
+  </label>
+
+  <nav>
+    <ul>
+      <li><a href="perfil.html" class="active"><i class="fa-solid fa-user"></i> Minha conta</a></li>
+      <li><a href="senha.html"><i class="fa-solid fa-lock"></i> Alterar senha</a></li>
+      <li><a href="historico.html"><i class="fa-solid fa-clock-rotate-left"></i> Históricos</a></li>
+      <li><a href="veiculos.html"><i class="fa-solid fa-car"></i> Garagem</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<div class="main-wrap">
+    <section class="vidro">
+  <h1>Editar informações</h1>
+  <form id="form-perfil" class="profile-grid">
+    <div class="section-title">Informações pessoais</div>
+    <div class="input-group">
+      <i class="fa-solid fa-user"></i>
+      <input type="text" id="nome" placeholder="Nome" required>
+    </div>
+    <div class="input-group">
+      <i class="fa-regular fa-user"></i>
+      <input type="text" id="sobrenome" placeholder="Sobrenome" required>
+    </div>
+    <div class="input-group">
+      <i class="fa-solid fa-envelope"></i>
+      <input type="email" id="email" placeholder="E-mail" required>
+    </div>
+    <div class="input-group">
+      <i class="fa-solid fa-phone"></i>
+      <input type="tel" id="telefone" placeholder="Telefone">
+    </div>
+    <div class="input-group">
+      <i class="fa-solid fa-calendar-days"></i>
+      <input type="date" id="dt_nasc">
+    </div>
+    <div class="section-title full">Endereço</div>
+    <div class="input-group">
+      <i class="fa-solid fa-map-pin"></i>
+      <input type="text" id="cep" placeholder="CEP">
+    </div>
+    <div class="input-group">
+      <i class="fa-solid fa-city"></i>
+      <input type="text" id="cidade" placeholder="Cidade">
+    </div>
+    <div class="actions full">
+      <button type="submit" class="save-btn">Salvar Alterações</button>
+      <button type="button" class="delete-btn">Excluir conta</button>
+    </div>
+    <div id="perfil-mensagem" class="full" style="text-align: center; margin-top: 10px;"></div>
+  </form>
+</section>
+</div>
+<script src="src/js/main.js"></script>
+<script src="src/js/perfil.js"></script>
 </body>
 </html>
